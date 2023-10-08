@@ -17,28 +17,62 @@
 </body>
 
 <script>
-		const apiKey = "";
+		const apiKey = "8e7265170a89aebc23b02e1c63a84f6a";
 
 		let temp;
 		let lat;
 		let lon;
 
-		function getData() {
-			let apiCall = ``;
+		async function getData() {
+			let apiCall = `http://api.openweathermap.org/geo/1.0/direct?q=Jaco,CR&limit=5&appid=8e7265170a89aebc23b02e1c63a84f6a`;
+			// fetch(apiCall)
+			// 	.then((response)=> {
+			// 		response.json();
+			// 	})
+			// 	.then((data) => {
+			// 		console.log(data);
+			// 		lat = data[0].lat;
+			// 		lon = data[0].lon;
+			// 		renderLatLon();
+			// 	})
+			const locationResponse = await fetch(apiCall);
+			const locationData = await locationResponse.json();
+			console.log(locationData);
+			lat = locationData[0].lat;
+			lon = locationData[0].lon;
+			renderLatLon();
+			getTemp();
 			// get lat and long
 			// get temp
 		}
 
 		function renderLatLon() {
+			document.querySelector('#lat').innerText = "Lat: " + lat;
+			document.querySelector('#lon').innerText = "Lon: " + lon;
 		}
 
-		function getTemp() {
-			
+		async function getTemp() {
+			let apiCall = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+			// fetch(apiCall)
+			// 	.then((response)=> {
+			// 		response.json();
+			// 	})
+			// 	.then((data) => {
+			// 		console.log(data);
+			// 		temp = data.main.temp;
+			// 		renderTemp();
+			// 	})
+			const tempResponse = await fetch(apiCall);
+			const tempData = await tempResponse.json();
+			console.log(tempData);
+			temp = tempData.main.temp;
+			renderTemp();
 		}
 
         
 		function renderTemp() {
-		
+			document.querySelector('#temp').innerText = "Temp: " + temp;
 		}
+
 	</script>
 </html>
