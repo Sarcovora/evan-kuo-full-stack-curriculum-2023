@@ -23,7 +23,7 @@
 
 <script>
 		// USE YOUR OWN API KEY
-		const apiKey = "";
+		const apiKey = "8e7265170a89aebc23b02e1c63a84f6a";
 
         // variable that stores the city that is chosen
 		let city;
@@ -87,7 +87,7 @@
 		}
 
 		// function that is called whenever a city has been selected
-		function selectCity(fullName, name, state, lat, lon) {
+		async function selectCity(fullName, name, state, lat, lon) {
 			// hides the search-results-list since it is not needed right now
 			document.querySelector('#search-results-list').className = 'hidden'
 			// sets the global city variable
@@ -101,7 +101,52 @@
 			}
 			//printing the city object to the console
 			console.log(city);
+			let apiCall = `http://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}`;
             // BEGIN CODING HERE
+			const tempResponse = await fetch(apiCall);
+			const tempData = await tempResponse.json();
+			console.log(tempData);
+			temp = tempData.main.temp;
+
+			// Fetch and render current weather
+			renderCurrentWeather(tempData);
+
+			// Fetch and render 5-day forecast
+			const forecastApiCall = `http://api.openweathermap.org/data/2.5/forecast?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}`;
+			const forecastResponse = await fetch(forecastApiCall);
+			const forecastData = await forecastResponse.json();
+			renderForecast(forecastData);
+
 		}
+
+		function renderCurrentWeather(data) {
+			const container = document.querySelector("#weather-container");
+			const tempInFahrenheit = ((data.main.temp - 273.15) * 9/5 + 32).toFixed(2);
+			container.innerHTML = `
+				<h2>${city.fullName}</h2>
+				<p>Temperature: ${tempInFahrenheit}°F</p>
+				<p>Weather: ${data.weather[0].description}</p>
+			`;
+		}
+
+		function renderForecast(data) {
+			const container = document.querySelector("#weather-container");
+			const forecastDiv = document.createElement('div');
+			forecastDiv.innerHTML = '<h3>5-Day Forecast:</h3>';
+			for (let i = 0; i < data.list.length; i+=8) { // Taking one entry for each day (as there are 8 entries/day)
+				const dayData = data.list[i];
+				const tempInFahrenheit = ((dayData.main.temp - 273.15) * 9/5 + 32).toFixed(2);
+				const forecastEntry = `
+					<div>
+						<strong>${formatDate(i/8)}</strong>
+						<p>Temperature: ${tempInFahrenheit}°F</p>
+						<p>Weather: ${dayData.weather[0].description}</p>
+					</div>
+				`;
+				forecastDiv.innerHTML += forecastEntry;
+			}
+			container.appendChild(forecastDiv);
+		}
+
 	</script>
 </html>
