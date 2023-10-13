@@ -11,11 +11,11 @@
 	<div id='main-container'>
 		<div id='weather-container'>
 		</div> 
-	</div>
+	</div>	
 	<div id='side-container'>
 		<div>
-			<input id='search-input' placeholder='search for a city'></input>
-			<button id='search-button' onclick="search()">search</button>
+			<input id='search-input' placeholder='Search for a city'></input>
+			<button id='search-button' onclick="search()">Search</button>
 		</div>
 		<ul id='search-results-list'></ul>
 	</div>
@@ -88,64 +88,87 @@
 
 		// function that is called whenever a city has been selected
 		async function selectCity(fullName, name, state, lat, lon) {
-			// hides the search-results-list since it is not needed right now
+            // hides the search-results-list since it is not needed right now
 			document.querySelector('#search-results-list').className = 'hidden'
 			// sets the global city variable
-			document.querySelector("#search-input").value = ''
-			city = {
-				fullName: fullName,
-				name: name,
-				state: state,
-				lat: lat,
-				lon: lon
-			}
+            document.querySelector("#search-input").value = ''
+            city = {
+                fullName: fullName,
+                name: name,
+                state: state,
+                lat: lat,
+                lon: lon
+            }
 			//printing the city object to the console
-			console.log(city);
+            console.log(city);
 			let apiCall = `http://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}`;
             // BEGIN CODING HERE
-			const tempResponse = await fetch(apiCall);
-			const tempData = await tempResponse.json();
+            const tempResponse = await fetch(apiCall);
+            const tempData = await tempResponse.json();
 			console.log(tempData);
 			temp = tempData.main.temp;
 
-			// Fetch and render current weather
+            // Fetch and render current weather
 			renderCurrentWeather(tempData);
-
 			// Fetch and render 5-day forecast
 			const forecastApiCall = `http://api.openweathermap.org/data/2.5/forecast?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}`;
 			const forecastResponse = await fetch(forecastApiCall);
 			const forecastData = await forecastResponse.json();
 			renderForecast(forecastData);
+			const aqiApiCall = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}`;
+			const aqiResponse = await fetch(aqiApiCall);
+			const aqiData = await aqiResponse.json();
+			renderAQI(aqiData);
 
 		}
 
 		function renderCurrentWeather(data) {
 			const container = document.querySelector("#weather-container");
-			const tempInFahrenheit = ((data.main.temp - 273.15) * 9/5 + 32).toFixed(2);
+			const tempInFahrenheit = ((data.main.temp - 273.15) * 9 / 5 + 32).toFixed(2);
+			const iconSrc = `icons/${data.weather[0].icon}.svg`;
 			container.innerHTML = `
 				<h2>${city.fullName}</h2>
+				<img src="${iconSrc}" alt="${data.weather[0].description}">
 				<p>Temperature: ${tempInFahrenheit}°F</p>
 				<p>Weather: ${data.weather[0].description}</p>
 			`;
 		}
-
+		
 		function renderForecast(data) {
 			const container = document.querySelector("#weather-container");
+			// container.innerHTML = `<h1>${city.fullName}</h1><h2>5-Day Forecast:</h2>`;
 			const forecastDiv = document.createElement('div');
-			forecastDiv.innerHTML = '<h3>5-Day Forecast:</h3>';
-			for (let i = 0; i < data.list.length; i+=8) { // Taking one entry for each day (as there are 8 entries/day)
+			forecastDiv.innerHTML = `<h1>${city.fullName}</h1><h2>5-Day Forecast:</h2>`;
+
+			for (let i = 0; i < data.list.length; i+=8) { // Taking one entry for each day (as there are 8 entries/day) 
 				const dayData = data.list[i];
 				const tempInFahrenheit = ((dayData.main.temp - 273.15) * 9/5 + 32).toFixed(2);
-				const forecastEntry = `
-					<div>
-						<strong>${formatDate(i/8)}</strong>
-						<p>Temperature: ${tempInFahrenheit}°F</p>
-						<p>Weather: ${dayData.weather[0].description}</p>
-					</div>
+				const iconSrc = `icons/${dayData.weather[0].icon}.svg`;
+
+
+				const dayDiv = document.createElement('div');
+				dayDiv.innerHTML = `
+					<strong>${formatDate(i/8)}</strong>
+					<img src="${iconSrc}" alt="${dayData.weather[0].description}">
+					<p>${tempInFahrenheit}°F</p>
 				`;
-				forecastDiv.innerHTML += forecastEntry;
+
+
+				container.appendChild(dayDiv);
 			}
-			container.appendChild(forecastDiv);
+		}
+
+
+		function renderAQI(data) {
+			const container = document.querySelector("#weather-container");
+			const aqiDiv = document.createElement('div');
+			aqiDiv.innerHTML = `
+				<h3>Air Quality Index:</h3>
+				<p>AQI: ${data.list[0].main.aqi}</p>
+				<p>PM2.5: ${data.list[0].components.pm2_5} µg/m³</p>
+				<p>PM10: ${data.list[0].components.pm10} µg/m³</p>
+			`;
+			container.appendChild(aqiDiv);
 		}
 
 	</script>
