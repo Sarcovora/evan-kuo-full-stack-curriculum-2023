@@ -7,7 +7,7 @@
 
 # Homework # 1: HTML Resume
 
-It's recruiting season which means that you'll need a resume to show the world your skills and experiences. The goal of this homework assignmnet is to familiarize you with HTML, so play around with different tags and formats. Don't worry about making the resume pretty, we'll do that next week when we learn CSS :)
+It's recruiting season which means that you'll need a resume to show the world your skills and experiences. The goal of this homework assignment is to familiarize you with HTML, so play around with different tags and formats. Don't worry about making the resume pretty, we'll do that next week when we learn CSS :)
 
 ## Instructions
 

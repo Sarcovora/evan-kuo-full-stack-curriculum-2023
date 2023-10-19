@@ -16,7 +16,7 @@ function App() {
       {/* CssBaseline is a component from MUI. It helps in providing consistent baseline styling across different browsers. */}
       <CssBaseline/>
       {/* TODO: AuthProvider is a custom context component that provides authentication functionalities to its children. */}
-      
+      <AuthProvider>
         {/* ThemeProvider from MUI provides theming capabilities. We pass our custom theme to it. */}
         <ThemeProvider theme={theme}>
           {/* Routes is a component from react-router-dom that wraps all possible routes or pages */}
@@ -27,7 +27,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
           </Routes>
         </ThemeProvider>
-      
+      </AuthProvider>
     </Router>
   );
 }
