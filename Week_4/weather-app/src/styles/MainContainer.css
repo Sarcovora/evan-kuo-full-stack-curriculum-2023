@@ -1,16 +1,80 @@
-/* Add your styling for MainContainer component here */
-/* For example: */
 #main-container {
   height: 100%;
+  min-height: 100vh;
   width: 66%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #87b7ff;
+  background-color: #91b4e7;
 }
 
 #weather-container {
-  height: 60%;
-  width: 90%;
+  height: 80%;
+  width: 70%;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  text-align: center;
+
+
+  font-size: 18px;
+}
+#weather-container div {
+  display: inline-block;  /* makes them side by side */
+  margin: 10px;  /* some spacing between each day */
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);  /* optional: to give a subtle shadow for depth */
+  padding: 10px;
+}
+
+#weather-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+#weather-container img {
+  max-width: 70px;
+  margin-bottom: 10px;
+}
+
+#weather-container p {
+  margin: 5px 0;
+  font-size: 18px;
+}
+
+#weather-container div {
+  margin: 20px 0;
+  font-size: 16px;
+}
+
+#weather-container div h1 {
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+#weather-container div h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+#weather-container div h3 {
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+#weather-container div strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+#weather-container div img {
+  margin: 10px 0;
+}
+
+#weather-container div p {
+  margin: 5px 0;
+  font-size: 16px;
 }

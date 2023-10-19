@@ -3,6 +3,33 @@ import "../styles/MainContainer.css"; // Import the CSS file for MainContainer
 
 function MainContainer(props) {
 
+  const [weather, setWeather] = useState(null);
+  const [forecast, setForecast] = useState(null);
+  const [aqi, setAqi] = useState(null);
+
+  const apiKey = "8e7265170a89aebc23b02e1c63a84f6a"; // Replace with your own API key
+
+  useEffect(() => {
+    if (props.selectedCity) {
+      const { lat, lon } = props.selectedCity;
+
+      // Fetch current weather
+      fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`)
+          .then(response => response.json())
+          .then(data => setWeather(data));
+
+      // Fetch 5-day forecast
+      fetch(`http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`)
+          .then(response => response.json())
+          .then(data => setForecast(data));
+
+      // Fetch AQI
+      fetch(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`)
+          .then(response => response.json())
+          .then(data => setAqi(data));
+    }
+  }, [props.selectedCity]);
+
   function formatDate(daysFromNow = 0) {
     let output = "";
     var date = new Date();
@@ -19,7 +46,8 @@ function MainContainer(props) {
   is dependent on the city selected in SideContainer and managed in App.js. You need the data to flow from 
   App.js to MainContainer for the selected city before making an API call to fetch weather data.
   */
-  
+
+
   /*
   STEP 2: Manage Weather Data with State.
   
@@ -28,7 +56,7 @@ function MainContainer(props) {
   (e.g., 'weather') and its corresponding setter function (e.g., 'setWeather'). The initial state can be 
   null or an empty object.
   */
-  
+
   
   /*
   STEP 3: Fetch Weather Data When City Changes.
@@ -59,6 +87,43 @@ function MainContainer(props) {
         This is a good section to play around with React components! Create your own - a good example could be a WeatherCard
         component that takes in props, and displays data for each day of the week.
         */}
+
+        {weather && (
+            <>
+              <h2>{props.selectedCity.fullName}</h2>
+              <img src={`icons/${weather.weather[0].icon}.svg`} alt={weather.weather[0].description} />
+              <p>Temperature: {((weather.main.temp - 273.15) * 9 / 5 + 32).toFixed(2)}°F</p>
+              <p>Weather: {weather.weather[0].description}</p>
+            </>
+        )}
+
+        {forecast && (
+            <>
+              <h2>5-Day Forecast:</h2>
+              {forecast.list.map((dayData, index) => {
+                if (index % 8 === 0) {
+                  return (
+                      <div key={index}>
+                        <strong>{formatDate(index / 8)}</strong>
+                        <img src={`icons/${dayData.weather[0].icon}.svg`} alt={dayData.weather[0].description} />
+                        <p>{((dayData.main.temp - 273.15) * 9 / 5 + 32).toFixed(2)}°F</p>
+                      </div>
+                  );
+                }
+                return null;
+              })}
+            </>
+        )}
+
+        {aqi && (
+            <>
+              <h3>Air Quality Index:</h3>
+              <p>AQI: {aqi.list[0].main.aqi}</p>
+              <p>PM2.5: {aqi.list[0].components.pm2_5} µg/m³</p>
+              <p>PM10: {aqi.list[0].components.pm10} µg/m³</p>
+            </>
+        )}
+
       </div>
     </div>
   );

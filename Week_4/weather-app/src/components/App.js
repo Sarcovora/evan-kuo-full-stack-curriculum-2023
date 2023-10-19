@@ -4,7 +4,7 @@ import '../styles/App.css'; // Import the CSS file for App
 import MainContainer from './MainContainer';
 import SideContainer from './SideContainer';
 
-const apiKey = '6dc87f0d902ad7e89bffc74e3ba537ef'; // Your OpenWeatherMap API key here
+const apiKey = '8e7265170a89aebc23b02e1c63a84f6a'; // Your OpenWeatherMap API key here
 
 function App() {
   /*
@@ -25,24 +25,28 @@ function App() {
   that takes city data as its argument and uses the setter function from the 'useState' hook to update the 
   state of the selected city. This function will be passed to SideContainer as a prop.
   */
+    const [selectedCity, setSelectedCity] = useState(null);
+
+    const updateSelectedCity = (newCityData) => {
+        setSelectedCity(newCityData);
+    };
   
-  
-  return (
-    <div className="app-container">
-      {/* 
-      STEP 3: Connect Components through Props.
-      
-      Pass the setter function you created as a prop to 'SideContainer'. This allows SideContainer to update 
-      the state in this App component. Name this prop something like 'setSelectedCity'.
-      
-      For the 'MainContainer' component, pass the state variable containing the selected city's data. This 
-      allows MainContainer to display the weather for the selected city.
-      */}
-      
-      <MainContainer apiKey={apiKey} /* Pass the selected city data as props to 'MainContainer' */ />
-      <SideContainer apiKey={apiKey} /* Pass the city data update function as a prop to 'SideContainer' */ />
-    </div>
-  );
+    return (
+        <div className="app-container">
+            {/*
+            STEP 3: Connect Components through Props.
+
+            Pass the setter function you created as a prop to 'SideContainer'. This allows SideContainer to update
+            the state in this App component. Name this prop something like 'setSelectedCity'.
+
+            For the 'MainContainer' component, pass the state variable containing the selected city's data. This
+            allows MainContainer to display the weather for the selected city.
+            */}
+
+            <MainContainer apiKey={apiKey} selectedCity={selectedCity} /* Pass the selected city data as props to 'MainContainer' */ />
+            <SideContainer apiKey={apiKey} setSelectedCity={updateSelectedCity} /* Pass the city data update function as a prop to 'SideContainer' */ />
+        </div>
+    );
 }
 
 export default App;

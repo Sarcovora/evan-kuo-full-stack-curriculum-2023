@@ -83,7 +83,7 @@ function SideContainer(props) {
   */
 
   // function that is called whenever a city has been selected
-  function selectCity(fullName, name, state, lat, lon) {
+  async function selectCity(fullName, name, state, lat, lon) {
     // hides the search-results-list since it is not needed right now
     document.querySelector("#search-results-list").className = "hidden";
     // sets the global city variable
@@ -96,6 +96,7 @@ function SideContainer(props) {
       lon: lon,
     };
     console.log(city);
+    props.setSelectedCity(city);
   }
 
   return (
