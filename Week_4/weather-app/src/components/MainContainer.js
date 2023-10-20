@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/MainContainer.css"; // Import the CSS file for MainContainer
 
+
 function MainContainer(props) {
 
   const [weather, setWeather] = useState(null);
@@ -91,7 +92,7 @@ function MainContainer(props) {
         {weather && (
             <>
               <h2>{props.selectedCity.fullName}</h2>
-              <img src={`icons/${weather.weather[0].icon}.svg`} alt={weather.weather[0].description} />
+              <img src={require(`../icons/${weather.weather[0].icon}.svg`)} alt={weather.weather[0].description} />
               <p>Temperature: {((weather.main.temp - 273.15) * 9 / 5 + 32).toFixed(2)}°F</p>
               <p>Weather: {weather.weather[0].description}</p>
             </>
@@ -105,7 +106,7 @@ function MainContainer(props) {
                   return (
                       <div key={index}>
                         <strong>{formatDate(index / 8)}</strong>
-                        <img src={`icons/${dayData.weather[0].icon}.svg`} alt={dayData.weather[0].description} />
+                        <img src={require(`../icons/${dayData.weather[0].icon}.svg`)} alt={dayData.weather[0].description} />
                         <p>{((dayData.main.temp - 273.15) * 9 / 5 + 32).toFixed(2)}°F</p>
                       </div>
                   );
