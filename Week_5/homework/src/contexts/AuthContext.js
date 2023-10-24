@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
     const [loginError, setLoginError] = useState(null);
 
     // dummy login function
-    const VALID_USERNAME = 'admin';
+    const VALID_USERNAME = 'evan';
     const VALID_PASSWORD = 'foobar';
 
     // Login function that validates the provided username and password.

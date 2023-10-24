@@ -28,10 +28,6 @@ export default function HomePage() {
   }, [currentUser])
 
 
-
-
-
-
   // State to hold the list of tasks.
   const [tasks, setTasks] = useState([
     // Sample tasks to start with.
