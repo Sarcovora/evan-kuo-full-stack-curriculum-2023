@@ -1,6 +1,6 @@
 // Importing necessary hooks and functionalities
-import React, { createContext, useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {createContext, useContext, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 
 // Creating a context for authentication. Contexts provide a way to pass data through 
 // the component tree without having to pass props down manually at every level.
@@ -13,21 +13,21 @@ export const useAuth = () => {
 
 // This is our authentication provider component.
 // It uses the context to provide authentication-related data and functions to its children components.
-export function AuthProvider({ children }) {
+export function AuthProvider({children}) {
     const navigate = useNavigate();
     const [currentUser, setCurrentUser] = useState(() => JSON.parse(localStorage.getItem('user')));
     const [loginError, setLoginError] = useState(null);
 
     // dummy login function
     const VALID_USERNAME = 'evan';
-    const VALID_PASSWORD = 'foobar';
+    const VALID_PASSWORD = 'racecar';
 
     // Login function that validates the provided username and password.
     const login = (username, password) => {
-        
+
         if (username === VALID_USERNAME && password === VALID_PASSWORD) {
-            setCurrentUser({ username });
-            localStorage.setItem('user', JSON.stringify({ username }));
+            setCurrentUser({username});
+            localStorage.setItem('user', JSON.stringify({username}));
             navigate('/');
         } else {
             setLoginError('Invalid username or password.');
