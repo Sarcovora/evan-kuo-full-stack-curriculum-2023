@@ -26,14 +26,15 @@ export default function HomePage() {
 
     useEffect(() => {
         if (currentUser) {
-            axios.get(`https://tpeo-todo.vercel.app/tasks/`)
+            axios.get(`https://tpeo-todo.vercel.app/tasks/${currentUser.user}`)
                 .then((response) => {
                     console.log("API Response:", response.data);
                     // filter the tasks to only include the current user's tasks
                     console.log("Current User: ", currentUser);
-                    const filteredTasks = response.data.filter((task) => task.user.username === currentUser.username);
-                    console.log("Filtered tasks:", filteredTasks);
-                    setTasks(filteredTasks);
+                    // const filteredTasks = response.data.filter((task) => task.user === currentUser.username);
+                    // console.log("Filtered tasks:", filteredTasks);
+                    setTasks(response.data)
+                    // setTasks(filteredTasks);
                 })
                 .catch((error) => {
                     console.error('Error fetching tasks:', error);
@@ -59,7 +60,7 @@ export default function HomePage() {
             // to the API to add a new task and then update the state based on the response.
 
             axios.post('https://tpeo-todo.vercel.app/tasks', {
-                user: currentUser, task: taskName, finished: false,
+                user: currentUser.username, task: taskName, finished: false,
             })
                 .then((response) => {
                     setTasks([...tasks, response.data]);

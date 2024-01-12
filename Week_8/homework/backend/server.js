@@ -1,7 +1,7 @@
 // Importing required modules
 const express = require("express");
-const bodyParser = require("body-parser");
 const cors = require("cors");
+const admin = require("firebase-admin");
 
 // Creating an instance of Express
 const app = express();
@@ -14,7 +14,23 @@ const db = require("./firebase");
 
 // Middlewares to handle cross-origin requests and to parse the body of incoming requests to JSON
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
+
+const auth = (req, res, next) => {
+  try {
+    const tokenId = req.get("Authorization").split("Bearer ")[1];
+    admin
+      .auth()
+      .verifyIdToken(tokenId)
+      .then((decoded) => {
+        req.token = decoded;
+        next();
+      })
+      .catch((err) => res.status(401).send(err));
+  } catch (err) {
+    res.status(400).send("Invalid token");
+  }
+};
 
 // Your API routes will go here...
 
@@ -46,7 +62,7 @@ app.get("/tasks/:userID", async (req, res) => {
   try {
     const userID = req.params.userID;
 
-    console.log(req.params)
+    // console.log("from getting all tasks: " + req.params);
 
     // Fetch all documents from tasks collection for a specific user
     const snapshot = await db
@@ -74,13 +90,13 @@ app.post("/tasks", async (req, res) => {
     const userTask = req.body.name;
     const finished = req.body.finished;
     const data = {
-      userID: userID,
-      name: userTask,
-      finished: finished,
+      'userID': userID,
+      'name': userTask,
+      'finished': finished,
     };
     // Adding a new document to the "tasks" collection
     const addedTask = await db.collection("tasks").add(data);
-    console.log(addedTask.id);
+    // console.log(addedTask.id);
 
     res.status(201).send({
       id: addedTask.id,
@@ -89,25 +105,24 @@ app.post("/tasks", async (req, res) => {
 
     // Sending a successful response
   } catch (error) {
+    // console.log("adding new task failed with err: " + error.message)
     res.status(500).send(error.message);
   }
 });
 
 // DELETE: Endpoint to remove a task
-app.delete("/tasks/:id", async (req, res) => {
+app.delete("/tasks/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
-    // Deleting a document from the "tasks" collection
     await db.collection("tasks").doc(id).delete();
     res.status(204).send();
+    // console.log("delete task success")
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
 
-// Setting the port for the server to listen on
 const PORT = process.env.PORT || 3001;
-// Starting the server
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
